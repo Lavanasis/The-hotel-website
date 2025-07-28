@@ -1,0 +1,30 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .spinner {
+        @apply mx-auto my-12 w-[60px] aspect-square rounded-full border-8 border-primary-900 border-r-primary-200 animate-spin;
+    }
+
+    .spinner-mini {
+        @apply w-5 aspect-square rounded-full border-2 border-primary-200 border-r-transparent animate-spin;
+    }
+
+    @keyframes rotate {
+        to {
+            transform: rotate(1turn);
+        }
+    }
+}
+
+
+.rdp {
+    --rdp-cell-size: 32px !important;
+    --rdp-accent-color: #f97316 !important;
+  
+    --rdp-background-color: #ea580c !important;
+
+    margin: 0 !important;
+}
