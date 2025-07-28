@@ -22,29 +22,29 @@ async function request(url, options = {}) {
 
 export async function fetchCabinDataById(documentId) {
   const url = `${BASE_URL}/cabins?filters[documentId][$eq]=${documentId}&populate=image&populate=bookings`;
-  return (await request(url, { cache: "no-store" }))[0] ?? null;
+  return (await request(url, { next: { revalidate: 300 } }))[0] ?? null;
 }
 
 export async function fetchCabinData() {
   const url = `${BASE_URL}/cabins?populate=image`;
-  return (await request(url, { cache: "no-store" })) ?? [];
+  return (await request(url, { next: { revalidate: 300 } })) ?? [];
 }
 
 export async function fetchSettingData() {
   const url = `${BASE_URL}/settings`;
-  return await request(url, { cache: "no-store" });
+  return await request(url, { next: { revalidate: 3600 } });
 }
 
 export async function fetchGuest() {
   const url = `${BASE_URL}/guests`;
-  return await request(url, { cache: "no-store" });
+  return await request(url, { next: { revalidate: 300 } });
 }
 
 export async function fetchGuestByEmail(email) {
   const url = `${BASE_URL}/guests?filters[email][$eq]=${encodeURIComponent(
     email
   )}&populate[bookings][populate][cabinID][populate]=image`;
-  const data = await request(url, { cache: "no-store" });
+  const data = await request(url, { next: { revalidate: 300 } });
   return data && data.length > 0 ? data[0] : null;
 }
 
@@ -73,7 +73,7 @@ export async function deleteBookingData(bookingDocumentId) {
 
 export async function fetchBookingById(documentId) {
   const url = `${BASE_URL}/bookings/${documentId}?populate[cabinID][populate]=image`;
-  const data = await request(url, { cache: "no-store" });
+  const data = await request(url, { next: { revalidate: 300 } });
   if (!data) return null;
   return { documentId: data.documentId, ...data };
 }

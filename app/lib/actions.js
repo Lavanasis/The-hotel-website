@@ -1,6 +1,6 @@
 "use server";
 import { auth, signIn, signOut } from "./auth";
-import { DeleteBookingData, updateGuestData,updateBookingData } from "./FetchData";
+import { deleteBookingData, updateGuestData,updateBookingData } from "./FetchData";
 import { fetchGuestByEmail } from "./FetchData";
 import { revalidatePath } from "next/cache";
 import { createBookingData } from "./FetchData";
@@ -15,7 +15,7 @@ export async function updateGuest(formData) {
 }
 
 export async function deleteBooking(bookingdocumentId) {
-  await DeleteBookingData(bookingdocumentId);
+  await deleteBookingData(bookingdocumentId);
 
   revalidatePath("/account/reservations");
 }
@@ -50,7 +50,6 @@ export async function createBooking(bookingData,formData) {
     bookingStatus: "unconfirmed",
     guestID:guest.documentId
   };
-  console.log("UPDATEDATA:",updateData);
   await createBookingData(updateData);
 }
 export async function signInAction() {
