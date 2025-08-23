@@ -16,7 +16,6 @@ export async function updateGuest(formData) {
 
 export async function deleteBooking(bookingdocumentId) {
   await deleteBookingData(bookingdocumentId);
-
   revalidatePath("/account/reservations");
 }
 
@@ -51,6 +50,7 @@ export async function createBooking(bookingData,formData) {
     guestID:guest.documentId
   };
   await createBookingData(updateData);
+  revalidatePath("/account/reservations");
 }
 export async function signInAction() {
   await signIn("github", { redirectTo: "/account" });

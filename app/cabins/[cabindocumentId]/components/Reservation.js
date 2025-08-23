@@ -1,6 +1,6 @@
 
 import { fetchSettingData } from "@/app/lib/FetchData";
-import DateSelector from "./DataSelector";
+import DateSelector from "./DateSelector";
 import ReservationForm from "./ReservationForm";
 import { parseISO, eachDayOfInterval} from "date-fns";
 import subDays from "date-fns/subDays";

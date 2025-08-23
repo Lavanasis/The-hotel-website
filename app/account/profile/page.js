@@ -1,9 +1,16 @@
-import { UpdateYourProfile } from "./components/UpdateYourProfile";
+
 import { fetchGuestByEmail } from "@/app/lib/FetchData";
 import { auth } from "@/app/lib/auth";
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
+import Spinner from "@/app/components/Spinner";
 export const metadata = {
   title: "Update profile",
 };
+const UpdateYourProfile = dynamic(
+  () => import("./components/UpdateYourProfile"),
+  { loading: () => <Spinner /> }
+);
 
 export default async function Page() {
   const session = await auth();
@@ -20,7 +27,8 @@ export default async function Page() {
         faster and smoother. See you soon!
       </p>
 
-      <UpdateYourProfile guest={guest}/>
+        <UpdateYourProfile guest={guest} />
+
     </div>
   );
 }

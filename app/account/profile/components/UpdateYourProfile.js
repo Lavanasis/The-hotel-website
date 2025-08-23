@@ -2,7 +2,7 @@
 
 import { updateGuest } from "@/app/lib/actions";
 import SubmitButton from "../../../components/SubmitButton";
-export function UpdateYourProfile({ guest }) {
+export default function UpdateYourProfile({ guest }) {
   return (
     <form
       action={updateGuest}

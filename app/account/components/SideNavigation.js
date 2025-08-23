@@ -33,8 +33,11 @@ function SideNavigation() {
         {navLinks.map((link) => (
           <li key={link.name}>
             <Link
-              className={`py-3 px-5 hover:bg-primary-900 hover:text-primary-100 transition-colors flex items-center gap-4 font-semibold text-primary-200 ${pathname===link.href?"bg-primary-900":""}` }
+              className={`py-3 px-5 hover:bg-primary-900 hover:text-primary-100 transition-colors flex items-center gap-4 font-semibold text-primary-200 ${
+                pathname === link.href ? "bg-primary-900" : ""
+              }`}
               href={link.href}
+              prefetch
             >
               {link.icon}
               <span>{link.name}</span>
@@ -42,8 +45,8 @@ function SideNavigation() {
           </li>
         ))}
 
-        <li className="mt-auto"> 
-        {/* 把按钮放到底部 */}
+        <li className="mt-auto">
+          {/* 把按钮放到底部 */}
           <SignOutButton />
         </li>
       </ul>
