@@ -3,7 +3,7 @@ import image1 from "../public/about-1.jpg"
 import image2 from "../public/about-2.jpg"
 import { fetchCabinData } from "../lib/FetchData";
 
-export const revalidate = 1000;
+export const revalidate = 86400; 
 export const metadata = {
   title: "About",
 };

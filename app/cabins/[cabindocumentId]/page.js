@@ -9,7 +9,7 @@ import {
 //避免 generateMetadata 和 Page 重复请求
 const fetchCabinDataById = cache(_fetchCabinDataById);
 
-export const revalidate = 3600; // ISR: 每小时重新生成
+export const revalidate = 3600; 
 
 // 动态生成 <title>
 export async function generateMetadata({ params }) {
