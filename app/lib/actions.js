@@ -1,61 +1,126 @@
 "use server";
 import { auth, signIn, signOut } from "./auth";
-import { deleteBookingData, updateGuestData,updateBookingData } from "./FetchData";
-import { fetchGuestByEmail } from "./FetchData";
+import {
+  deleteBookingData,
+  updateGuestData,
+  updateBookingData,
+  createBookingData,
+  fetchGuestByEmail,
+} from "./FetchData";
 import { revalidatePath } from "next/cache";
-import { createBookingData } from "./FetchData";
+
+// ========== Guest ==========
 export async function updateGuest(formData) {
-  const session = await auth();
-  const guest = await fetchGuestByEmail(session.user.email);
-  if (!guest) throw new Error("Guest not found");
-  const nationalID = formData.get("nationalID");
-  const updateData = {nationalID};
-  await updateGuestData(guest.documentId, updateData);
-  revalidatePath("/account/profile"); //按需重新验证
+  try {
+    const session = await auth();
+    if (!session?.user?.email) throw new Error("Unauthorized");
+
+    const guest = await fetchGuestByEmail(session.user.email);
+    if (!guest) throw new Error("Guest not found");
+
+    const nationalID = formData.get("nationalID");
+    if (!nationalID) throw new Error("National ID is required");
+
+    const updateData = { nationalID };
+    await updateGuestData(guest.documentId, updateData);
+
+    revalidatePath("/account/profile");
+    return { success: true };
+  } catch (err) {
+    console.error("updateGuest error:", err);
+    return { success: false, error: err.message };
+  }
 }
 
+// ========== Booking ==========
 export async function deleteBooking(bookingdocumentId) {
-  await deleteBookingData(bookingdocumentId);
-  revalidatePath("/account/reservations");
+  try {
+    if (!bookingdocumentId) throw new Error("Booking ID is required");
+
+    await deleteBookingData(bookingdocumentId);
+    revalidatePath("/account/reservations");
+
+    return { success: true };
+  } catch (err) {
+    console.error("deleteBooking error:", err);
+    return { success: false, error: err.message };
+  }
 }
 
 export async function updateBooking(formData) {
-  const session = await auth();
-  const guest = await fetchGuestByEmail(session.user.email);
-  if (!guest) throw new Error("Guest not found");
+  try {
+    const session = await auth();
+    if (!session?.user?.email) throw new Error("Unauthorized");
 
-  const bookingdocumentId = formData.get("bookingdocumentId");
+    const guest = await fetchGuestByEmail(session.user.email);
+    if (!guest) throw new Error("Guest not found");
 
-  const updateData = {
-    nightsNumber: Number(formData.get("nightsNumber")),
-    observations: formData.get("observations")?.slice(0, 1000) || "",
-  };
+    const bookingdocumentId = formData.get("bookingdocumentId");
+    if (!bookingdocumentId) throw new Error("Booking ID is required");
 
-  await updateBookingData(bookingdocumentId, updateData);
+    const updateData = {
+      nightsNumber: Number(formData.get("nightsNumber")) || 1,
+      observations: formData.get("observations")?.slice(0, 1000) || "",
+    };
 
-  revalidatePath(`/account/reservations/edit/${bookingdocumentId}`);
-  revalidatePath("/account/reservations");
+    await updateBookingData(bookingdocumentId, updateData);
+
+    revalidatePath(`/account/reservations/edit/${bookingdocumentId}`);
+    revalidatePath("/account/reservations");
+
+    return { success: true };
+  } catch (err) {
+    console.error("updateBooking error:", err);
+    return { success: false, error: err.message };
+  }
 }
-export async function createBooking(bookingData,formData) {
-  const session = await auth();
-  const guest = await fetchGuestByEmail(session.user.email)
-  const updateData = {
-    ...bookingData,
-    guestsNumber: Number(formData.get("numGuests")),
-    observations: formData.get("observations").slice(0, 1000),
-    extraPrice: 0,
-    isPaid: false,
-    hasBreakfast: false,
-    bookingStatus: "unconfirmed",
-    guestID:guest.documentId
-  };
-  await createBookingData(updateData);
-  revalidatePath("/account/reservations");
+
+export async function createBooking(bookingData, formData) {
+  try {
+    const session = await auth();
+    if (!session?.user?.email) throw new Error("Unauthorized");
+
+    const guest = await fetchGuestByEmail(session.user.email);
+    if (!guest) throw new Error("Guest not found");
+
+    const updateData = {
+      ...bookingData,
+      guestsNumber: Number(formData.get("numGuests")) || 1,
+      observations: formData.get("observations")?.slice(0, 1000) || "",
+      extraPrice: 0,
+      isPaid: false,
+      hasBreakfast: false,
+      bookingStatus: "unconfirmed",
+      guestID: guest.documentId,
+    };
+
+    await createBookingData(updateData);
+    revalidatePath("/account/reservations");
+
+    return { success: true };
+  } catch (err) {
+    console.error("createBooking error:", err);
+    return { success: false, error: err.message };
+  }
 }
+
+// ========== Auth ==========
 export async function signInAction() {
-  await signIn("github", { redirectTo: "/account" });
+  try {
+    await signIn("github", { redirectTo: "/account" });
+    return { success: true };
+  } catch (err) {
+    console.error("signInAction error:", err);
+    return { success: false, error: err.message };
+  }
 }
 
 export async function signOutAction() {
-  await signOut({ redirectTo: "/" });
+  try {
+    await signOut({ redirectTo: "/" });
+    return { success: true };
+  } catch (err) {
+    console.error("signOutAction error:", err);
+    return { success: false, error: err.message };
+  }
 }

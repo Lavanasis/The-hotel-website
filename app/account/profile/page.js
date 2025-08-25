@@ -1,7 +1,6 @@
 
 import { fetchGuestByEmail } from "@/app/lib/FetchData";
 import { auth } from "@/app/lib/auth";
-import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import Spinner from "@/app/components/Spinner";
 export const metadata = {

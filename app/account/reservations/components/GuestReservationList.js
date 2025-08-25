@@ -3,9 +3,9 @@
 import GuestReservationCard from "./GuestReservationCard";
 import { useOptimistic } from "react";
 import { deleteBooking } from "@/app/lib/actions";
-
+import toast from "react-hot-toast";
 export default function GuestReservationList({ bookings }) {
-  const [optimisticBookings, optimisticDelete] = useOptimistic(  //乐观更新:用于先更新UI,再发送请求(先更新删除状态,再发送删除的请求)
+  const [optimisticBookings, optimisticDelete] = useOptimistic(
     bookings,
     (curBookings, bookingdocumentId) => {
       return curBookings.filter(
@@ -16,7 +16,13 @@ export default function GuestReservationList({ bookings }) {
 
   async function handleDelete(bookingdocumentId) {
     optimisticDelete(bookingdocumentId);
-    await deleteBooking(bookingdocumentId);
+    try {
+      await deleteBooking(bookingdocumentId);
+    } catch (err) {
+      toast.error("删除失败", err);
+      // 回滚
+      router.refresh();
+    }
   }
 
   return (
@@ -31,4 +37,3 @@ export default function GuestReservationList({ bookings }) {
     </ul>
   );
 }
-

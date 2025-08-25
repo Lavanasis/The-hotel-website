@@ -4,17 +4,15 @@ import { Suspense } from "react";
 import Spinner from "@/app/components/Spinner";
 import dynamic from "next/dynamic";
 
-// 给 TextExpander 配置动态导入
 const TextExpander = dynamic(() => import("./TextExpander"), {
-  ssr: false, // 不在服务端渲染，按需在客户端加载
   loading: () => <span>Loading description...</span>,
 });
 
-// 给 Reservation 配置动态导入
 const Reservation = dynamic(() => import("./Reservation"), {
   ssr: false,
   loading: () => <Spinner />,
 });
+
 export const revalidate = 3600;
 
 export default async function CabinDetailClient({ cabin }) {

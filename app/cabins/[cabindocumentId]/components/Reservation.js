@@ -4,7 +4,6 @@ import DateSelector from "./DateSelector";
 import ReservationForm from "./ReservationForm";
 import { parseISO, eachDayOfInterval} from "date-fns";
 import subDays from "date-fns/subDays";
-import addDays from "date-fns/addDays";
 import LoginMessage from "./LoginMessage";
 import { auth } from "@/app/lib/auth";
 export const revalidate = 1000;
